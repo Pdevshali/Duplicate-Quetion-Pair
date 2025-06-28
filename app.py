@@ -5,6 +5,8 @@ import pickle
 # model = pickle.load(open('model.pkl', 'rb'))
 import joblib
 model = joblib.load('model_compressed.pkl')
+# Add a comment
+# "trigger rebuild" 
 
 
 st.header("Duplicate Question pairs Detection")
