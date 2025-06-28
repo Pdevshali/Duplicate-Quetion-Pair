@@ -2,7 +2,10 @@ import streamlit as st
 import helper
 import pickle
 
-model = pickle.load(open('model.pkl', 'rb'))
+# model = pickle.load(open('model.pkl', 'rb'))
+import joblib
+model = joblib.load('model_compressed.pkl')
+
 
 st.header("Duplicate Question pairs Detection")
 
