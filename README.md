@@ -42,6 +42,8 @@ This app uses a **trained machine learning model** (Random Forest) to detect sem
 ### 🔹 App Home Page and result
 
 ![Home](git_read_me.png)
+![Home](gitImg.png)
+
 
 
 ## 📦 Installation (Local)
