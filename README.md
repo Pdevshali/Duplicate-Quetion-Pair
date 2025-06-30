@@ -1,6 +1,6 @@
 # 🔁 Duplicate Question Detector
 
-This is a **Streamlit web app** that intelligently detects whether two user-entered questions are duplicates — useful for Q&A platforms, forums, or support tools.
+This is a **Streamlit web app** that intelligently detects whether two user-entered questions are duplicates — useful for Q&A platforms, forums, or customer support systems.
 
 🚀 **Live Demo**:  
 [Click here to try it out](https://duplicate-quetion-pair-cvaq4vhgijr32kldstpcu8.streamlit.app/)
@@ -9,26 +9,18 @@ This is a **Streamlit web app** that intelligently detects whether two user-ente
 
 ## 📌 Overview
 
-This app uses a **trained machine learning model** (Random Forest) to identify semantic and syntactic similarity between two questions.
-
-It uses a variety of NLP techniques, including:
-
-- ✅ **Text Preprocessing** (cleaning, lowercasing, contraction expansion, etc.)
-- ✅ **Token-based Features**
-- ✅ **Length-based Features**
-- ✅ **Fuzzy Matching**
-- ✅ **Bag of Words** (BoW)
-- ✅ **Model Compression** using `joblib`
+This app uses a **trained machine learning model** (Random Forest) to detect semantic similarity between questions. It extracts handcrafted and vector-based features to compare them intelligently.
 
 ---
 
-## 🧠 How It Works
+## 🧠 Features
 
-1. User enters two questions.
-2. The questions are cleaned and tokenized.
-3. A series of hand-crafted and vector-based features are extracted.
-4. The pre-trained model predicts whether the questions are duplicates.
-5. The result is shown instantly in the app.
+✅ Clean, decontract, and lemmatize text  
+✅ Token-based and length-based features  
+✅ Fuzzy matching with FuzzyWuzzy  
+✅ Sentence vectorization using **Word2Vec**  
+✅ Trained RandomForest model (compressed using `joblib`)  
+✅ Deployed on **Streamlit Cloud**
 
 ---
 
@@ -38,8 +30,9 @@ It uses a variety of NLP techniques, including:
 |------------------|------------------------------------|
 | Web UI           | Streamlit                          |
 | NLP              | NLTK, BeautifulSoup, FuzzyWuzzy    |
+| Vectorization    | Gensim (Word2Vec)                  |
 | ML Model         | Scikit-learn (Random Forest)       |
-| Model Compression| Joblib                             |
+| Model Saving     | Joblib, Pickle                     |
 | Deployment       | Streamlit Cloud                    |
 
 ---
