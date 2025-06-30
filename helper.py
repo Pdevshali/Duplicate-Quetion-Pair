@@ -1,11 +1,17 @@
 import re
 # from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 import distance
 from fuzzywuzzy import fuzz
 import pickle
+import nltk
 import numpy as np
+import nltk
+nltk.download('wordnet')
+nltk.download('omw-1.4')  # Recommended for lemmatization to work correctly
 
-cv = pickle.load(open('cv.pkl','rb'))
+
+word2vec_model = pickle.load(open('word2vec.pkl','rb'))
 
 
 def test_common_words(q1,q2):
@@ -268,26 +274,41 @@ def preprocess(q):
     q = q.replace("n't", " not")
     q = q.replace("'re", " are")
     q = q.replace("'ll", " will")
+    
+     # using lemetization
+    q_lemmatized = []
+    wordnet = nltk.WordNetLemmatizer()
+    for word in q.split():
+        lemma = wordnet.lemmatize(word, pos='v')
+        q_lemmatized.append(lemma)
 
-    # # Removing HTML tags
-    # q = BeautifulSoup(q)
-    # q = q.get_text()
+    # Removing HTML tags
+    q = BeautifulSoup(q)
+    q = q.get_text()
 
-    # # Remove punctuations
-    # pattern = re.compile('\W')
-    # q = re.sub(pattern, ' ', q).strip()
+    # Remove punctuations
+    pattern = re.compile(r'\W')
+    q = re.sub(pattern, ' ', q).strip()
 
     return q
 
 
-def query_point_creator(q1, q2):
+def get_sentence_vector(sentence, model):
+    words = sentence.split()
+    vectors = [model.wv[word] for word in words if word in model.wv]
+    if not vectors:
+        return np.zeros(model.vector_size)
+    return np.mean(vectors, axis=0)
+
+
+def query_point_creator(q1, q2, model):
     input_query = []
 
-    # preprocess
+    # Preprocess questions
     q1 = preprocess(q1)
     q2 = preprocess(q2)
 
-    # fetch basic features
+    # Fetch basic handcrafted features
     input_query.append(len(q1))
     input_query.append(len(q2))
 
@@ -296,24 +317,27 @@ def query_point_creator(q1, q2):
 
     input_query.append(test_common_words(q1, q2))
     input_query.append(test_total_words(q1, q2))
-    input_query.append(round(test_common_words(q1, q2) / test_total_words(q1, q2), 2))
+    input_query.append(round(test_common_words(q1, q2) / (test_total_words(q1, q2) + 1e-6), 2))
 
-    # fetch token features
+    # Fetch token features
     token_features = test_fetch_token_features(q1, q2)
     input_query.extend(token_features)
 
-    # fetch length based features
+    # Fetch length-based features
     length_features = test_fetch_length_features(q1, q2)
     input_query.extend(length_features)
 
-    # fetch fuzzy features
+    # Fetch fuzzy features
     fuzzy_features = test_fetch_fuzzy_features(q1, q2)
     input_query.extend(fuzzy_features)
 
-    # bow feature for q1
-    q1_bow = cv.transform([q1]).toarray()
+    # Get Word2Vec vectors (dense, 100 dimensions typically)
+    q1_vec = get_sentence_vector(q1, model)
+    q2_vec = get_sentence_vector(q2, model)
 
-    # bow feature for q2
-    q2_bow = cv.transform([q2]).toarray()
+    # Final dense input vector
+    final_input = np.hstack((np.array(input_query), q1_vec, q2_vec)).reshape(1, -1)
 
-    return np.hstack((np.array(input_query).reshape(1, 22), q1_bow, q2_bow))
+    return final_input
+
+    # return np.hstack((np.array(input_query).reshape(1, 22), q1_bow, q2_bow))
