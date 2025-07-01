@@ -3,7 +3,7 @@
 This is a **Streamlit web app** that intelligently detects whether two user-entered questions are duplicates — useful for Q&A platforms, forums, or customer support systems.
 
 🚀 **Live Demo**:  
-[Click here to try it out](https://duplicate-quetion-pair-cvaq4vhgijr32kldstpcu8.streamlit.app/)
+[Click here to try it out](https://basic-duplicate-question-pair-6ghh7gqyauxqvjwm8ygvuw.streamlit.app/)
 
 ---
 
